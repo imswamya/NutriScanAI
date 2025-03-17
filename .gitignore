@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -172,3 +173,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+=======
+uploads_test
+utils
+config
+>>>>>>> 975a6f7 (first commit)
