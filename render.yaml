@@ -10,6 +10,6 @@ services:
       - key: FLASK_ENV
         value: production
       - key: FIREBASE_PROJECT_ID
-        value: nutri-scan-a-i-3am8a8
+        value: diet-analysis-eit0hx
       - key: GOOGLE_API_KEY
         value: AIzaSyDVe2rzp7Kclm8cpQcOuz2siq-oZ7A0Dys
