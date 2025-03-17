@@ -178,3 +178,6 @@ uploads_test
 utils
 config
 >>>>>>> 975a6f7 (first commit)
+config/keynutriscanai.json
+config/privatekey.json
+config/secretkry.json
