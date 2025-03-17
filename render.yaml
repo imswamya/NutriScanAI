@@ -2,10 +2,14 @@ services:
   - type: web
     name: diet-analysis-backend
     env: python
-    buildCommand: ./build.sh && pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11
       - key: FLASK_ENV
         value: production
+      - key: FIREBASE_PROJECT_ID
+        value: diet-analysis-eit0hx
+      - key: GOOGLE_API_KEY
+        value: AIzaSyDVe2rzp7Kclm8cpQcOuz2siq-oZ7A0Dys
