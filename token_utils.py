@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 # Global variables
 FIREBASE_PUBLIC_KEYS_URL = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
 FIREBASE_CERTIFICATES = {}
-FIREBASE_AUDIENCE = "diet-analysis-eit0hx"  # ✅ Your Firebase Project ID
+FIREBASE_AUDIENCE = "nutri-scan-a-i-3am8a8"  # ✅ Your Firebase Project ID
 FIREBASE_ISSUER = f"https://securetoken.google.com/{FIREBASE_AUDIENCE}"
 LAST_REFRESH_TIME = 0
 REFRESH_INTERVAL = 60 * 60  # 1 hour in seconds
