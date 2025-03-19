@@ -26,7 +26,7 @@ You can download the NutriScanAI Android APK from the following link:
     ```bash
     python app.py
     ```
-2. Follow the on-screen instructions to scan and analyze nutritional information.
+2. Read those comments to understand backend working
 
 ## Configuration
 Before running the application, ensure you have replaced the placeholder API keys and project ID in the `.env` file with your own credentials:
