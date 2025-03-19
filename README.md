@@ -35,4 +35,12 @@ We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact Information
-For any inquiries or support, please contact the maintainers at [your-email@example.com](mailto myselfswamya@gmail.com).
+For any inquiries or support, please contact the maintainers at [myselfswamya@gmail.com](mailto:myselfswamya@gmail.com).
+
+## Credits
+A huge thanks to all the contributors who helped make this project possible. Special thanks to:
+- [Contributor1](https://github.com/contributor1)
+- [Contributor2](https://github.com/contributor2)
+- [Contributor3](https://github.com/contributor3)
+
+Your contributions are greatly appreciated!
