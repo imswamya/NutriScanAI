@@ -35,4 +35,4 @@ We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact Information
-For any inquiries or support, please contact the maintainers at [your-email@example.com](mailto:your-email@example.com).
+For any inquiries or support, please contact the maintainers at [your-email@example.com](mailto myselfswamya@gmail.com).
