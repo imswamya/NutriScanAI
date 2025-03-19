@@ -43,6 +43,6 @@ A huge thanks to our team who helped make this project possible. Special thanks 
 - [Yash](https://github.com/member2)
 - [Bhavya](https://github.com/member3)
 - [Aman](https://github.com/member4)
--[Swamya](https://github.com/imswamya)
+- [Swamya](https://github.com/imswamya)
 
 Your contributions are greatly appreciated!
