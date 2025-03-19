@@ -24,7 +24,7 @@ You can download the NutriScanAI Android APK from the following link:
 ## Usage
 1. Run the main script:
     ```bash
-    python main.py
+    python app.py
     ```
 2. Follow the on-screen instructions to scan and analyze nutritional information.
 
