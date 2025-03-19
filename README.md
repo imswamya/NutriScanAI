@@ -28,6 +28,12 @@ You can download the NutriScanAI Android APK from the following link:
     ```
 2. Follow the on-screen instructions to scan and analyze nutritional information.
 
+## Configuration
+Before running the application, ensure you have replaced the placeholder API keys and project ID in the `.env` file with your own credentials:
+- `FIREBASE_PRIVATE_KEY_PATH`
+- `GOOGLE_API_KEY`
+- `FIREBASE_PROJECT_ID`
+
 ## Contributing
 We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) for more information.
 
