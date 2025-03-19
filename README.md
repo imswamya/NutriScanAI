@@ -37,10 +37,10 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact Information
 For any inquiries or support, please contact the maintainers at [myselfswamya@gmail.com](mailto:myselfswamya@gmail.com).
 
-## Credits
-A huge thanks to all the contributors who helped make this project possible. Special thanks to:
-- [Contributor1](https://github.com/contributor1)
-- [Contributor2](https://github.com/contributor2)
-- [Contributor3](https://github.com/contributor3)
+## Team
+A huge thanks to our team who helped make this project possible. Special thanks to:
+- [Team Member1](https://github.com/member1)
+- [Team Member2](https://github.com/member2)
+- [Team Member3](https://github.com/member3)
 
 Your contributions are greatly appreciated!
