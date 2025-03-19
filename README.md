@@ -39,8 +39,9 @@ For any inquiries or support, please contact the maintainers at [myselfswamya@gm
 
 ## Team
 A huge thanks to our team who helped make this project possible. Special thanks to:
-- [Team Member1](https://github.com/member1)
-- [Team Member2](https://github.com/member2)
-- [Team Member3](https://github.com/member3)
+- [Rituraj](https://github.com/member1)
+- [Yash](https://github.com/member2)
+- [Bhavya](https://github.com/member3)
+- [Aman](https://github.com/member4)
 
 Your contributions are greatly appreciated!
