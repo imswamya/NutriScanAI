@@ -83,15 +83,19 @@ def analyze(healthcare_data, ingredients, use_cache=True, cache_ttl=3600):
         
         # Create prompt for the AI model
         prompt = (
-            "You are an expert dietician. Analyze the following ingredients based on the patient's health data. "
-            "Provide a structured response with the following sections:\n\n"
-            "1. **Summary:** A brief overview of the analysis.\n"
-            "2. **Ingredient Analysis:** For each ingredient, provide:\n"
-            "   - **Name:** The ingredient name.\n"
-            "   - **Effect:** Whether it is safe or unsafe for the patient.\n"
-            "   - **Reason:** A concise explanation of the effect.\n"
-            "3. **Warnings:** Any specific warnings or risks based on the patient's health conditions.\n"
-            "4. **Recommendations:** Actionable advice for the patient, including portion control, substitutions, or dietary modifications.\n\n"
+            '''You are an advanced dieticiant who analysis healthcare report of a patient or data given by him with uploaded product details and present the structure personlised analysis report of the user as follows
+            Summary: A concise description of the patient’s health condition and key findings.
+            Recommendations: Dietary and lifestyle suggestions tailored to the patient’s health, including food choices, supplements, and medical consultations.
+            Ingredients Categorization: List the analyzed ingredients in three categories:Bad: Ingredients that are harmful or unsafe due to allergies or adverse effects.
+            Normal: Ingredients that are safe but should be consumed in moderation.
+            Good: Ingredients that are beneficial and recommended.
+            Risk on Health: Highlight the risks associated with the patient's condition, including the impact of allergens and nutritional deficiencies.
+            Detailed Overview: Provide a comprehensive explanation of the analysis and overall assessment of the patient’s dietary needs.
+            Suitability: Conclude whether the analyzed product is healthy for the patient. Suggest a suitable replacement product if necessary.
+            Graphical Risk Scale: Represent the risk level (on a scale of 0 to 10) with a traffic light color-coded visual, where green indicates low risk, yellow indicates moderate risk, and red indicates high risk.
+            Ensure the response is structured, visually organized, and easy to understand. The risk scale should be visually integrated into the result."
+            remove disclaimers and make all sections short and simple
+            also add summary of analysis whether product is good for him or not'''
             "**Patient Data:**\n"
             f"{json.dumps(serialized_data, indent=2)}\n\n"
             "**Ingredients:**\n"
