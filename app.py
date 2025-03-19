@@ -31,7 +31,7 @@ from io import BytesIO
 import sys  # For log flushing
 import datetime as dt
 from jose import jwt
-import token_utils  # Our new token utilities module
+import token_utils 
 
 # --- Load Environment Variables ---
 load_dotenv()
@@ -72,7 +72,7 @@ token_utils.initialize()
 logger.info("Token verification system initialized")
 
 # --- Helper Functions ---
-def download_file(url, max_size=5 * 1024 * 1024):  # 5 MB limit
+def download_file(url, max_size=10 * 1024 * 1024):  # 10 MB limit
     if not url.startswith("https://"):
         raise ValueError("Insecure URL detected. Only HTTPS URLs are allowed.")
 
@@ -308,31 +308,6 @@ def analyze_product(uid):
         return jsonify({"success": False, "error": "An unexpected error occurred."}), 500
 
 
-# --- Generate Test Token Endpoint (FOR TESTING ONLY) ---
-@app.route('/generate_test_token', methods=['GET'])
-def generate_test_token():
-    """Generate a test token for API testing.
-    THIS SHOULD BE REMOVED IN PRODUCTION.
-    """
-    try:
-        # Only allow in development environment
-        if os.environ.get('FLASK_ENV') != 'development':
-            return jsonify({"error": "This endpoint is only available in development mode"}), 403
-            
-        # Create a custom token for testing
-        test_uid = "test_user_123"
-        custom_token = auth.create_custom_token(test_uid)
-        token_string = custom_token.decode('utf-8')
-        
-        return jsonify({
-            "custom_token": token_string,
-            "note": "IMPORTANT: This is a custom token for testing purposes only. Use the Firebase SDK to exchange this for an ID token.",
-            "uid": test_uid,
-            "curl_example": f"curl -X POST http://localhost:5000/upload_healthcare_report \\\n-H \"Authorization: Bearer <ID_TOKEN>\" \\\n-F \"report_file=YOUR_FILE_URL\""
-        }), 200
-    except Exception as e:
-        logger.exception("Error generating test token")
-        return jsonify({"error": str(e)}), 500
 
 # --- Error Handlers ---
 @app.errorhandler(404)
