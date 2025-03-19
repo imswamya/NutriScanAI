@@ -48,7 +48,7 @@ A huge thanks to our team who helped make this project possible. Special thanks 
 - [Rituraj](https://github.com/member1)
 - [Yash](https://github.com/member2)
 - [Bhavya](https://github.com/member3)
-- [Aman](https://github.com/member4)
+- [Aman](https://github.com/amanm1001)
 - [Swamya](https://github.com/imswamya)
 
 Your contributions are greatly appreciated!
