@@ -46,7 +46,7 @@ For any inquiries or support, please contact the maintainers at [myselfswamya@gm
 ## Team
 A huge thanks to our team who helped make this project possible. Special thanks to:
 - [Rituraj](https://github.com/member1)
-- [Yash](https://github.com/yash080013)
+- [Yash](https://github.com/yash081103)
 - [Bhavya](https://github.com/bhavya-1602)
 - [Aman](https://github.com/amanm1001)
 - [Swamya](https://github.com/imswamya)
