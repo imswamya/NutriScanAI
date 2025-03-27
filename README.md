@@ -50,6 +50,6 @@ A huge thanks to our team who helped make this project possible. Special thanks 
 - [Bhavya](https://github.com/bhavya-1602)
 - [Aman](https://github.com/amanm1001)
 - [Swamya](https://github.com/imswamya)
-- [Mentor - Suranjeet Kosta](https://github.com/)
+- [Mentor - Suranjeet Kosta](https://github.com/imkosta)
 
 Your contributions are greatly appreciated!
