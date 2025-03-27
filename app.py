@@ -244,7 +244,9 @@ def analyze_product(uid):
             }), 404
             
         user_data = user_doc.to_dict()
-        healthcare_data = user_data.get('extracted_health_data')
+        healthcare_data = user_data.get('extracted_health_data',{})
+
+        
         if not healthcare_data:
             return jsonify({
                 "success": False, 
