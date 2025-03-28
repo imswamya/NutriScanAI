@@ -67,8 +67,16 @@ def calculate_risk_scale(analysis_text: str) -> float:
         # Look for a line containing "Risk Scale:" and extract the number
         for line in analysis_text.splitlines():
             if "Risk Scale:" in line:
-                # Remove any non-numeric characters and extra whitespace
-                risk_value_str = ''.join(char for char in line.split("Risk Scale:")[-1].strip() if char.isdigit() or char == '.')
+                # Extract numeric portion, handling extra dots or spaces
+                risk_value_str = line.split("Risk Scale:")[-1].strip()
+                
+                # Remove any extra dots or non-numeric characters except first dot
+                risk_value_str = risk_value_str.replace('..', '.')
+                risk_value_str = ''.join(char for char in risk_value_str if char.isdigit() or char == '.')
+                
+                # Truncate to first dot if multiple exist
+                if risk_value_str.count('.') > 1:
+                    risk_value_str = risk_value_str.split('.', 1)[0] + '.' + risk_value_str.split('.', 1)[1]
                 
                 # Convert to float and validate
                 risk_value = float(risk_value_str)
@@ -76,9 +84,12 @@ def calculate_risk_scale(analysis_text: str) -> float:
         
         logger.warning("Risk Scale not found in analysis text")
         return 5  # Default neutral risk if not found
+    except ValueError as e:
+        logger.error(f"Error extracting risk scale: {e}. Problematic value: {risk_value_str}")
+        return 5  # Neutral risk if conversion fails
     except Exception as e:
-        logger.error(f"Error extracting risk scale: {e}")
-        return 5  # Neutral risk if extraction fails
+        logger.error(f"Unexpected error extracting risk scale: {e}")
+        return 5  # Neutral risk if any other error occurs
 
 def analyze(healthcare_data: dict, ingredients: list, use_cache: bool = True, cache_ttl: int = 3600) -> tuple:
     """Analyze product safety based on user's healthcare data and ingredients.
