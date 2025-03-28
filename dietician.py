@@ -7,6 +7,7 @@ from google.cloud import firestore
 import logging
 import hashlib
 import time
+import re
 
 # Load environment variables
 load_dotenv()
@@ -53,43 +54,128 @@ def create_cache_key(healthcare_data: dict, ingredients: list) -> str:
     }, sort_keys=True)
     return hashlib.md5(combined.encode()).hexdigest()
 
+# def calculate_risk_scale(analysis_text: str) -> float:
+#     """
+#     Extract the risk scale from the analysis text.
+    
+#     Args:
+#         analysis_text (str): Detailed analysis from Gemini.
+    
+#     Returns:
+#         float: Risk score between 0 and 10, or 5 if extraction fails.
+#     """
+#     try:
+#         # Look for a line containing "Risk Scale:" and extract the number
+#         for line in analysis_text.splitlines():
+#             if "Risk Scale:" in line:
+#                 # Extract numeric portion, handling extra dots or spaces
+#                 risk_value_str = line.split("Risk Scale:")[-1].strip()
+                
+#                 # Remove any extra dots or non-numeric characters except first dot
+#                 risk_value_str = risk_value_str.replace('..', '.')
+#                 risk_value_str = ''.join(char for char in risk_value_str if char.isdigit() or char == '.')
+                
+#                 # Truncate to first dot if multiple exist
+#                 if risk_value_str.count('.') > 1:
+#                     risk_value_str = risk_value_str.split('.', 1)[0] + '.' + risk_value_str.split('.', 1)[1]
+                
+#                 # Convert to float and validate
+#                 risk_value = float(risk_value_str)
+#                 return min(max(0, risk_value), 10)  # Ensure the value is within 0-10
+        
+#         logger.warning("Risk Scale not found in analysis text")
+#         return 5  # Default neutral risk if not found
+#     except ValueError as e:
+#         logger.error(f"Error extracting risk scale: {e}. Problematic value: {risk_value_str}")
+#         return 5  # Neutral risk if conversion fails
+#     except Exception as e:
+#         logger.error(f"Unexpected error extracting risk scale: {e}")
+#         return 5  # Neutral risk if any other error occurs
+# import re
+
+import re
+
+
 def calculate_risk_scale(analysis_text: str) -> float:
     """
-    Extract the risk scale from the analysis text.
+    Extracts the risk scale from the analysis text with robust handling.
     
     Args:
-        analysis_text (str): Detailed analysis from Gemini.
+        analysis_text (str): Detailed analysis text.
     
     Returns:
-        float: Risk score between 0 and 10, or 5 if extraction fails.
+        float: Risk scale between 0 and 10, or 5 if extraction fails.
     """
     try:
-        # Look for a line containing "Risk Scale:" and extract the number
-        for line in analysis_text.splitlines():
-            if "Risk Scale:" in line:
-                # Extract numeric portion, handling extra dots or spaces
-                risk_value_str = line.split("Risk Scale:")[-1].strip()
-                
-                # Remove any extra dots or non-numeric characters except first dot
-                risk_value_str = risk_value_str.replace('..', '.')
-                risk_value_str = ''.join(char for char in risk_value_str if char.isdigit() or char == '.')
-                
-                # Truncate to first dot if multiple exist
-                if risk_value_str.count('.') > 1:
-                    risk_value_str = risk_value_str.split('.', 1)[0] + '.' + risk_value_str.split('.', 1)[1]
-                
-                # Convert to float and validate
-                risk_value = float(risk_value_str)
-                return min(max(0, risk_value), 10)  # Ensure the value is within 0-10
+        # Multiple pattern matching strategies
+        risk_patterns = [
+            # Primary pattern
+            r"Risk Scale:\s*([\d\.]+)",
+            
+            # Alternative patterns
+            r"\*\*Risk Scale:\*\*\s*([\d\.]+)",
+            r"Risk\s*Scale[:\s]*([\d\.]+)",
+            r"Risk\s*Level[:\s]*([\d\.]+)",
+            
+            # Fallback patterns
+            r"\b([\d\.]+)\s*(?:on\s*(?:the\s*)?risk\s*scale)\b",
+            r"\b(?:risk\s*of)\s*([\d\.]+)\b"
+        ]
         
-        logger.warning("Risk Scale not found in analysis text")
-        return 5  # Default neutral risk if not found
-    except ValueError as e:
-        logger.error(f"Error extracting risk scale: {e}. Problematic value: {risk_value_str}")
-        return 5  # Neutral risk if conversion fails
+        # Try each pattern
+        for pattern in risk_patterns:
+            match = re.search(pattern, analysis_text, re.IGNORECASE)
+            if match:
+                risk_value_str = match.group(1)
+                
+                # Aggressive cleaning
+                risk_value_str = re.sub(r"[^0-9.]", "", risk_value_str)
+                
+                # Handle multiple decimal points
+                if risk_value_str.count('.') > 1:
+                    # Keep only the first decimal point
+                    parts = risk_value_str.split('.')
+                    risk_value_str = f"{parts[0]}.{''.join(parts[1:]).replace('.', '')}"
+                
+                # Convert to float
+                try:
+                    risk_value = float(risk_value_str)
+                    # Ensure value is within 0-10 range
+                    return min(max(0, risk_value), 10)
+                except ValueError:
+                    # If conversion fails, continue to next pattern
+                    continue
+        
+        # Logging for debugging if no pattern matches
+        logging.warning(f"Risk Scale not found. First 200 chars: {analysis_text[:200]}")
+        return 5  # Default risk score
+    
     except Exception as e:
-        logger.error(f"Unexpected error extracting risk scale: {e}")
-        return 5  # Neutral risk if any other error occurs
+        # Comprehensive error logging
+        logging.error(f"Unexpected error extracting risk scale: {e}")
+        logging.error(f"Full analysis text: {analysis_text}")
+        return 5  # Return default if anything goes wrong
+
+# Test cases to verify robustness
+def test_risk_scale_extraction():
+    test_cases = [
+        "Risk Scale: 7.5",
+        "**Risk Scale:** 8..",
+        "The risk is 6 on the risk scale",
+        "Risk Level: 4.3",
+        "A risk of 9 was identified",
+        "Risk Scale near 7.2 indicates high potential",
+        "The analysis shows a risk level of 5.6",
+        "No clear risk scale present"
+    ]
+    
+    for case in test_cases:
+        risk = calculate_risk_scale(case)
+        print(f"Input: {case}")
+        print(f"Extracted Risk Scale: {risk}\n")
+
+# Uncomment to run tests
+# test_risk_scale_extraction()
 
 def analyze(healthcare_data: dict, ingredients: list, use_cache: bool = True, cache_ttl: int = 3600) -> tuple:
     """Analyze product safety based on user's healthcare data and ingredients.
