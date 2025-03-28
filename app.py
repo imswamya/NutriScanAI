@@ -1,17 +1,3 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import firebase_admin
-from firebase_admin import credentials, firestore, auth
-import extract
-import dietician
-import os
-import logging
-from functools import wraps
-from dotenv import load_dotenv
-import requests
-import time
-from io import BytesIO
-import sys  # For log flushing
 
 
 
