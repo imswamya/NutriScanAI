@@ -205,6 +205,120 @@ def upload_healthcare_report(uid):
         logger.exception("Error processing healthcare report")
         return jsonify({"success": False, "error": "An unexpected error occurred."}), 500
 
+# @app.route('/analyze', methods=['POST'])
+# @requires_auth
+# def analyze_product(uid):
+#     logger.info(f"Processing product analysis for UID: {uid}")
+#     try:
+#         # Log request details
+#         logger.info(f"Request content type: {request.content_type}")
+#         logger.info(f"Request data: {request.get_data()}")
+        
+#         # Handle both JSON and form-data requests
+#         if request.is_json:
+#             logger.info("Request is JSON")
+#             data = request.json
+#             ingredient_file_url = data.get('ingredient_file')
+#         else:
+#             logger.info("Request is form-data")
+#             ingredient_file_url = request.form.get('ingredient_file')
+            
+#             # If not in form, check if it's in query parameters (for GET with params)
+#             if not ingredient_file_url:
+#                 ingredient_file_url = request.args.get('ingredient_file')
+        
+#         logger.info(f"Ingredient file URL received: {ingredient_file_url}")
+        
+#         if not ingredient_file_url:
+#             logger.error("Missing ingredient file URL")
+#             return jsonify({"success": False, "error": "Missing ingredient file URL"}), 400
+        
+#         # Get user's healthcare data
+#         user_doc = db.collection("users").document(uid).get()
+#         if not user_doc.exists:
+#             return jsonify({
+#                 "success": False, 
+#                 "error": "User data not found. Please upload healthcare report first."
+#             }), 404
+            
+#         # Combine extracted_health_data with user_info
+#         user_data = user_doc.to_dict()
+#         extracted_health_data = user_data.get('extracted_health_data', {})
+        
+#         # Retrieve user_info from subcollection
+#         user_info_ref = db.collection("users").document(uid).collection("user_info")
+#         user_info_docs = user_info_ref.stream()
+        
+#         # Combine user_info documents into a single dictionary
+#         user_info = {}
+#         for doc in user_info_docs:
+#             user_info.update(doc.to_dict())
+        
+#         # Merge extracted_health_data with user_info
+#         healthcare_data = {**extracted_health_data, **user_info}
+        
+#         if not healthcare_data:
+#             return jsonify({
+#                 "success": False, 
+#                 "error": "Healthcare data not found. Please upload healthcare report first."
+#             }), 404
+        
+#         logger.info(f"Downloading ingredient file from URL")
+#         file_data = download_file(ingredient_file_url)
+        
+#         logger.info(f"Extracting ingredients from file")
+#         ingredients = extract.extract_ingredients(file_data)
+        
+#         if not ingredients:
+#             logger.warning("No ingredients extracted from file")
+#             return jsonify({"success": False, "error": "Could not extract ingredients"}), 422
+        
+#         logger.info(f"Ingredients extracted: {ingredients}")
+#         analysis_result = dietician.analyze(healthcare_data, ingredients)
+        
+#         # Generate a unique upload ID
+#         upload_id = db.collection("uploads").document().id
+        
+#         # Create timestamp once to use in both places
+#         timestamp = firestore.SERVER_TIMESTAMP
+        
+#         # Build data dictionary for both locations
+#         upload_data = {
+#             "user_id": uid,
+#             "image_url": ingredient_file_url,
+#             "ingredients": ingredients,
+#             "analysis": analysis_result,
+#             "uploaded_at": timestamp
+#         }
+        
+#         # 1. Store in main uploads collection
+#         db.collection("uploads").document(upload_id).set(upload_data)
+#         logger.info(f"Analysis stored in main uploads collection with ID: {upload_id}")
+        
+#         # 2. Store in user's subcollection
+#         user_upload_ref = db.collection("users").document(uid).collection("uploads").document(upload_id)
+#         user_upload_ref.set({
+#             "ingredients": ingredients,
+#             "analysis": analysis_result,
+#             "uploaded_at": timestamp,
+#             "image_url": ingredient_file_url
+#         })
+#         logger.info(f"Analysis stored in user's uploads subcollection with ID: {upload_id}")
+        
+#         return jsonify({
+#             "success": True,
+#             "document_id": upload_id,
+#             "ingredients": ingredients,
+#             "analysis": analysis_result,
+#             "healthcare_data": healthcare_data  # Optional: return combined healthcare data
+#         }), 200
+        
+#     except ValueError as e:
+#         logger.error(f"Value error: {e}")
+#         return jsonify({"success": False, "error": str(e)}), 400
+#     except Exception as e:
+#         logger.exception("Error in analyze_product")
+#         return jsonify({"success": False, "error": "An unexpected error occurred."}), 500
 @app.route('/analyze', methods=['POST'])
 @requires_auth
 def analyze_product(uid):
@@ -274,7 +388,8 @@ def analyze_product(uid):
             return jsonify({"success": False, "error": "Could not extract ingredients"}), 422
         
         logger.info(f"Ingredients extracted: {ingredients}")
-        analysis_result = dietician.analyze(healthcare_data, ingredients)
+        # Updated to handle both analysis text and risk scale
+        analysis_result, risk_scale = dietician.analyze(healthcare_data, ingredients)
         
         # Generate a unique upload ID
         upload_id = db.collection("uploads").document().id
@@ -288,6 +403,7 @@ def analyze_product(uid):
             "image_url": ingredient_file_url,
             "ingredients": ingredients,
             "analysis": analysis_result,
+            "scale": risk_scale,  # New field for risk scale
             "uploaded_at": timestamp
         }
         
@@ -300,6 +416,7 @@ def analyze_product(uid):
         user_upload_ref.set({
             "ingredients": ingredients,
             "analysis": analysis_result,
+            "scale": risk_scale,  # New field for risk scale
             "uploaded_at": timestamp,
             "image_url": ingredient_file_url
         })
@@ -310,7 +427,8 @@ def analyze_product(uid):
             "document_id": upload_id,
             "ingredients": ingredients,
             "analysis": analysis_result,
-            "healthcare_data": healthcare_data  # Optional: return combined healthcare data
+            "scale": risk_scale,  # Added to JSON response
+            "healthcare_data": healthcare_data
         }), 200
         
     except ValueError as e:
@@ -319,109 +437,7 @@ def analyze_product(uid):
     except Exception as e:
         logger.exception("Error in analyze_product")
         return jsonify({"success": False, "error": "An unexpected error occurred."}), 500
-    
-# @app.route('/analyze', methods=['POST'])
-# @requires_auth
-# def analyze_product(uid):
-#     logger.info(f"Processing product analysis for UID: {uid}")
-#     try:
-#         # Log request details
-#         logger.info(f"Request content type: {request.content_type}")
-#         logger.info(f"Request data: {request.get_data()}")
-        
-#         # Handle both JSON and form-data requests
-#         if request.is_json:
-#             logger.info("Request is JSON")
-#             data = request.json
-#             ingredient_file_url = data.get('ingredient_file')
-#         else:
-#             logger.info("Request is form-data")
-#             ingredient_file_url = request.form.get('ingredient_file')
-            
-#             # If not in form, check if it's in query parameters (for GET with params)
-#             if not ingredient_file_url:
-#                 ingredient_file_url = request.args.get('ingredient_file')
-        
-#         logger.info(f"Ingredient file URL received: {ingredient_file_url}")
-        
-#         if not ingredient_file_url:
-#             logger.error("Missing ingredient file URL")
-#             return jsonify({"success": False, "error": "Missing ingredient file URL"}), 400
-        
-#         # Rest of your existing code...
-#         # Get user's healthcare data
-#         user_doc = db.collection("users").document(uid).get()
-#         if not user_doc.exists:
-#             return jsonify({
-#                 "success": False, 
-#                 "error": "User data not found. Please upload healthcare report first."
-#             }), 404
-            
-#         user_data = user_doc.to_dict()
-#         healthcare_data = user_data.get('extracted_health_data',{})
 
-        
-#         if not healthcare_data:
-#             return jsonify({
-#                 "success": False, 
-#                 "error": "Healthcare data not found. Please upload healthcare report first."
-#             }), 404
-        
-#         logger.info(f"Downloading ingredient file from URL")
-#         file_data = download_file(ingredient_file_url)
-        
-#         logger.info(f"Extracting ingredients from file")
-#         ingredients = extract.extract_ingredients(file_data)
-        
-#         if not ingredients:
-#             logger.warning("No ingredients extracted from file")
-#             return jsonify({"success": False, "error": "Could not extract ingredients"}), 422
-        
-#         logger.info(f"Ingredients extracted: {ingredients}")
-#         analysis_result = dietician.analyze(healthcare_data, ingredients)
-        
-#         # Generate a unique upload ID
-#         upload_id = db.collection("uploads").document().id
-        
-#         # Create timestamp once to use in both places
-#         timestamp = firestore.SERVER_TIMESTAMP
-        
-#         # Build data dictionary for both locations
-#         upload_data = {
-#             "user_id": uid,
-#             "image_url": ingredient_file_url,
-#             "ingredients": ingredients,
-#             "analysis": analysis_result,
-#             "uploaded_at": timestamp
-#         }
-        
-#         # 1. Store in main uploads collection
-#         db.collection("uploads").document(upload_id).set(upload_data)
-#         logger.info(f"Analysis stored in main uploads collection with ID: {upload_id}")
-        
-#         # 2. Store in user's subcollection
-#         user_upload_ref = db.collection("users").document(uid).collection("uploads").document(upload_id)
-#         user_upload_ref.set({
-#             "ingredients": ingredients,
-#             "analysis": analysis_result,
-#             "uploaded_at": timestamp,
-#             "image_url": ingredient_file_url
-#         })
-#         logger.info(f"Analysis stored in user's uploads subcollection with ID: {upload_id}")
-        
-#         return jsonify({
-#             "success": True,
-#             "document_id": upload_id,
-#             "ingredients": ingredients,
-#             "analysis": analysis_result
-#         }), 200
-        
-#     except ValueError as e:
-#         logger.error(f"Value error: {e}")
-#         return jsonify({"success": False, "error": str(e)}), 400
-#     except Exception as e:
-#         logger.exception("Error in analyze_product")
-#         return jsonify({"success": False, "error": "An unexpected error occurred."}), 500
 
 
 
