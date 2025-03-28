@@ -157,22 +157,22 @@ def calculate_risk_scale(analysis_text: str) -> float:
         return 5  # Return default if anything goes wrong
 
 # Test cases to verify robustness
-def test_risk_scale_extraction():
-    test_cases = [
-        "Risk Scale: 7.5",
-        "**Risk Scale:** 8..",
-        "The risk is 6 on the risk scale",
-        "Risk Level: 4.3",
-        "A risk of 9 was identified",
-        "Risk Scale near 7.2 indicates high potential",
-        "The analysis shows a risk level of 5.6",
-        "No clear risk scale present"
-    ]
+# def test_risk_scale_extraction():
+#     test_cases = [
+#         "Risk Scale: 7.5",
+#         "**Risk Scale:** 8..",
+#         "The risk is 6 on the risk scale",
+#         "Risk Level: 4.3",
+#         "A risk of 9 was identified",
+#         "Risk Scale near 7.2 indicates high potential",
+#         "The analysis shows a risk level of 5.6",
+#         "No clear risk scale present"
+#     ]
     
-    for case in test_cases:
-        risk = calculate_risk_scale(case)
-        print(f"Input: {case}")
-        print(f"Extracted Risk Scale: {risk}\n")
+#     for case in test_cases:
+#         risk = calculate_risk_scale(case)
+#         print(f"Input: {case}")
+#         print(f"Extracted Risk Scale: {risk}\n")
 
 # Uncomment to run tests
 # test_risk_scale_extraction()
