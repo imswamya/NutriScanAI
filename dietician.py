@@ -67,9 +67,13 @@ def calculate_risk_scale(analysis_text: str) -> float:
         # Look for a line containing "Risk Scale:" and extract the number
         for line in analysis_text.splitlines():
             if "Risk Scale:" in line:
-                # Extract the number after "Risk Scale:"
-                risk_value = float(line.split("Risk Scale:")[-1].strip())
+                # Remove any non-numeric characters and extra whitespace
+                risk_value_str = ''.join(char for char in line.split("Risk Scale:")[-1].strip() if char.isdigit() or char == '.')
+                
+                # Convert to float and validate
+                risk_value = float(risk_value_str)
                 return min(max(0, risk_value), 10)  # Ensure the value is within 0-10
+        
         logger.warning("Risk Scale not found in analysis text")
         return 5  # Default neutral risk if not found
     except Exception as e:
