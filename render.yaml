@@ -12,4 +12,4 @@ services:
       - key: FIREBASE_PROJECT_ID
         value: nutri-scan-a-i-3am8a8
       - key: GOOGLE_API_KEY
-        value: AIzaSyD_X4Wn-_YJ6APmXvibrG2C0Up3x-dqHBM
+        value: AIzaSyDtqJBHrXkaRrx6P1zFNuQW7S2Xqkcp-7o
