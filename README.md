@@ -19,7 +19,7 @@ NutriScanAI is a tool for scanning and analyzing nutritional information from fo
 
 ## APK Download
 You can download the NutriScanAI Android APK from the following link:
-[Download NutriScanAI APK](link-to-your-apk)
+[Download NutriScanAI APK](https://drive.google.com/file/d/1WDT1VniKxXDC6N0UQkMF_JMdEYnK-_mx/view?usp=drivesdk)
 
 ## Usage
 1. Run the main script:
